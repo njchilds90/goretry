@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+      - name: Test before release
+        run: go test -v ./...
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+```
+
+Commit message: `ci: add release workflow`
+
+---
+
+### Step 9 — Tag v0.1.0 to Trigger Release & pkg.go.dev Indexing
+
+1. Go to your repo → **Releases** (right sidebar) → **Create a new release**
+2. Click **Choose a tag** → type `v0.1.0` → click **Create new tag: v0.1.0**
+3. **Release title:** `v0.1.0 — Initial Release`
+4. **Description:**
+```
+## What's included
+- `Do` — retry any function with full backoff control
+- `DoWithResult[T]` — generic typed retry with result
+- Exponential, linear, and fixed backoff strategies
+- Full and equal jitter
+- Context cancellation support
+- Circuit breaker (Closed/Open/HalfOpen)
+- Before/after/error hooks
+- Panic recovery
+- Zero external dependencies
+- Full test suite with race detector
+```
+5. Click **Publish release**
+
+---
+
+### Step 10 — After Publishing
+
+After the tag is pushed, pkg.go.dev will auto-index within ~10 minutes. Visit:
+
+**https://pkg.go.dev/github.com/njchilds90/goretry**
+
+---
+
+### Final File Structure
+```
+goretry/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── release.yml
+├── .gitignore
+├── LICENSE
+├── README.md
+├── go.mod
+├── retry.go
+├── retry_test.go
+└── example_test.go
