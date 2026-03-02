@@ -103,7 +103,7 @@ func TestDo_RetryIf_StopsOnNonRetryable(t *testing.T) {
 
 func TestDo_OnRetryHook(t *testing.T) {
 	retries := 0
-	goretry.Do(context.Background(), func(ctx context.Context) error {
+	err := goretry.Do(context.Background(), func(ctx context.Context) error {
 		return errTransient
 	},
 		goretry.WithMaxAttempts(4),
@@ -112,6 +112,9 @@ func TestDo_OnRetryHook(t *testing.T) {
 			retries++
 		}),
 	)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if retries != 3 {
 		t.Fatalf("expected 3 retry hooks, got %d", retries)
 	}
@@ -124,7 +127,7 @@ func TestDo_OnSuccessHook(t *testing.T) {
 	},
 		goretry.WithMaxAttempts(3),
 		goretry.WithOnSuccess(func(attempt int) {
-			succeeded = true
+			Succeeded = true
 		}),
 	)
 	if !succeeded {
@@ -228,11 +231,11 @@ func TestDoWithResult_Success(t *testing.T) {
 }
 
 func TestDoWithResult_RetriesAndReturnsValue(t *testing.T) {
-	calls := 0
+	_calls := 0
 	result, err := goretry.DoWithResult(context.Background(),
 		func(ctx context.Context) (string, error) {
-			calls++
-			if calls < 3 {
+			_calls++
+			if _calls < 3 {
 				return "", errTransient
 			}
 			return "ok", nil
@@ -296,7 +299,7 @@ func TestCircuitBreaker_Reset(t *testing.T) {
 	cb.RecordFailure()
 	cb.Reset()
 	if cb.State() != goretry.StateClosed {
-		t.Fatal("expected closed after reset")
+		 t.Fatal("expected closed after reset")
 	}
 }
 
