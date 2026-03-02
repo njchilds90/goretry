@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/njchilds90/goretry)](https://goreportcard.com/report/github.com/njchilds90/goretry)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**goretry** is a production-ready, zero-dependency retry library for Go.  
+**goretry** is a production-ready, zero-dependency retry library for Go. 
 Inspired by Python's `tenacity`, Node's `retry`, and Java's `resilience4j`.
 
 ---
@@ -39,6 +39,7 @@ package main
 import (
     "context"
     "fmt"
+    "time"
     "github.com/njchilds90/goretry"
 )
 

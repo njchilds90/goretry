@@ -3,11 +3,11 @@
 //
 // Basic usage:
 //
-//	err := goretry.Do(ctx, fn,
-//	    goretry.WithMaxAttempts(5),
-//	    goretry.WithExponentialBackoff(100*time.Millisecond, 2.0),
-//	    goretry.WithJitter(goretry.FullJitter),
-//	)
+//	-  err := goretry.Do(ctx, fn,
+//	-      goretry.WithMaxAttempts(5),
+//	-      goretry.WithExponentialBackoff(100*time.Millisecond, 2.0),
+//	-      goretry.WithJitter(goretry.FullJitter),
+//	-  )
 package goretry
 
 import (
@@ -164,6 +164,11 @@ func WithCircuitBreaker(cb *CircuitBreaker) Option {
 // allowing retry logic to apply even when the function panics.
 func WithRecoverPanic(recover bool) Option {
 	return func(c *config) { c.recoverPanic = recover }
+}
+
+func init() {
+	// Seed the global random source for jitter computations.
+	rand.Seed(time.Now().UnixNano())
 }
 
 func defaultConfig() *config {
